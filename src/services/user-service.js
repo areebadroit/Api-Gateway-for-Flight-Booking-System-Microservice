@@ -26,12 +26,11 @@ async function signin(data) {
   try {
     const user = await userRepository.getUserByEmail(data.email);
     if (!user) {
-      return new AppError(
+      throw new AppError(
         "No user found for the given email.",
         StatusCodes.NOT_FOUND
       );
     }
-    console.log(user);
     const passwordMatch = Auth.checkPassword(data.password, user.password);
     if (!passwordMatch) {
       throw new AppError("Invalid password.", StatusCodes.BAD_REQUEST);
@@ -39,7 +38,9 @@ async function signin(data) {
     const jwt = Auth.createToken({ id: user.id, email: user.email });
     return jwt;
   } catch (error) {
-    console.log(error);
+    if (error instanceof AppError) {
+      throw error;
+    }
     throw new AppError(
       "Something went wrong.",
       StatusCodes.INTERNAL_SERVER_ERROR
