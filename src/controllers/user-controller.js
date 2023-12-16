@@ -19,6 +19,24 @@ async function signup(req, res) {
     return res.status(error.statusCode).json(ErrorResponse);
   }
 }
+async function signin(req, res) {
+  console.log(req.body);
+  try {
+    const user = await UserService.signin({
+      email: req.body.email,
+      password: req.body.password,
+    });
+    SuccessResponse.message = "Successfully logged in.";
+    SuccessResponse.data = user;
+    return res.status(StatusCodes.OK).json(SuccessResponse);
+  } catch (error) {
+    console.log(error);
+    ErrorResponse.message = "Something went wrong while logging in the user.";
+    ErrorResponse.error = error;
+    return res.status(error.statusCode).json(ErrorResponse);
+  }
+}
 module.exports = {
   signup,
+  signin,
 };
