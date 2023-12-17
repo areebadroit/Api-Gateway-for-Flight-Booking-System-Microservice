@@ -20,15 +20,17 @@ app.use("/api", apiRoutes);
 app.use(
   "/flightsservice",
   createProxyMiddleware({
-    target: "http://127.0.0.1:3000/",
+    target: ServerConfig.FLIGHT_SERVICE,
     changeOrigin: true,
+    pathRewrite: { '/flightsservice"': "/" },
   })
 );
 app.use(
   "/bookingservice",
   createProxyMiddleware({
-    target: "http://127.0.0.1:4000/",
+    target: ServerConfig.BOOKING_SERVICE,
     changeOrigin: true,
+    pathRewrite: { '/bookingservice"': "/" },
   })
 );
 app.listen(ServerConfig.PORT, async () => {
