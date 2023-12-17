@@ -9,5 +9,11 @@ router.post(
   AuthRequestMiddleware.validateSigninRequest,
   UserController.signin
 );
+router.post(
+  "/assignrole",
+  AuthRequestMiddleware.checkAuth,
+  AuthRequestMiddleware.isAdmin,
+  UserController.addRoleToUser
+);
 
 module.exports = router;

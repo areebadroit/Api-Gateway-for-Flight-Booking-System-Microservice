@@ -28,7 +28,7 @@ async function checkAuth(req, res, next) {
     );
     console.log("response: " + response);
     if (response) {
-      req.user = response; //The respone will have userid which could be helpful for us in future to retrieve user record by id, so adding it in the req
+      req.userId = response; //The respone will have userid which could be helpful for us in future to retrieve user record by id, so adding it in the req
       next();
     }
   } catch (error) {
@@ -36,7 +36,18 @@ async function checkAuth(req, res, next) {
     return res.status(error.statusCode).json(error);
   }
 }
+async function isAdmin(req, res, next) {
+  const response = await UserService.isAdmin(req.userId);
+  if (!response) {
+    return res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ message: "User not authorized for the action" });
+  }
+  console.log(response);
+  next();
+}
 module.exports = {
   validateSigninRequest,
   checkAuth,
+  isAdmin,
 };

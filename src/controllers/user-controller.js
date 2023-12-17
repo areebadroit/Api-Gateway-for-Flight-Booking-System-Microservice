@@ -36,7 +36,27 @@ async function signin(req, res) {
     return res.status(error.statusCode).json(ErrorResponse);
   }
 }
+async function addRoleToUser(req, res) {
+  console.log(req.body);
+  try {
+    const assign = await UserService.addRoleToUser({
+      id: req.body.id,
+      role: req.body.role,
+    });
+    SuccessResponse.message =
+      "Successfully assigned the role to the given user.";
+    SuccessResponse.data = assign;
+    return res.status(StatusCodes.OK).json(SuccessResponse);
+  } catch (error) {
+    console.log(error);
+    ErrorResponse.message =
+      "Something went wrong while assigning the role to the given user.";
+    ErrorResponse.error = error;
+    return res.status(error.statusCode).json(ErrorResponse);
+  }
+}
 module.exports = {
   signup,
   signin,
+  addRoleToUser,
 };
