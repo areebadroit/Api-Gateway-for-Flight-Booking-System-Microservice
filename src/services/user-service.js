@@ -1,15 +1,19 @@
-const { UserRepository } = require("../repositories");
+const { UserRepository, RoleRepository } = require("../repositories");
 const { AppError } = require("../utils/errors/app-error");
 const { StatusCodes } = require("http-status-codes");
 const { Auth } = require("../utils/common");
-const { use } = require("../routes/v1");
+const role = require("../models/role");
 const userRepository = new UserRepository();
+const roleRepository = new RoleRepository();
 
 async function createUser(data) {
   try {
-    const city = await userRepository.create(data);
-    return city;
+    const user = await userRepository.create(data);
+    const role = await roleRepository.getRoleByName("customer");
+    await user.addRole(role);
+    return user;
   } catch (error) {
+    console.log(error);
     if (
       error.name == "SequelizeValidationError" ||
       error.name == "SequelizeUniqueConstraintError"
